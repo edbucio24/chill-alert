@@ -17,10 +17,18 @@ function App() {
   }
 
   return (
-    <div style={{ padding: '40px' }}>
+    <div
+      style={{
+        padding: '40px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        textAlign: 'center',
+      }}
+    >
       <h1>Chill Alert</h1>
 
-      <div style={{ display: 'flex', gap: '12px' }}>
+      <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
         <select
           value={selectedId}
           onChange={(e) => setSelectedId(e.target.value)}
