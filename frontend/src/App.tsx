@@ -2,11 +2,16 @@ import { useState } from 'react'
 import { stations } from './mockData'
 import { measurementOptions } from './types'
 import type { Measurement } from './types'
+import { WeatherCard } from './components/WeatherCard'
+import './components/WeatherCard.css'
 
 function App() {
   const [selectedId, setSelectedId] = useState(stations[0].id)
   const [measurement, setMeasurement] = useState<Measurement>('Temperature')
 
+  const selected = stations.find((s) => s.id === selectedId)
+  console.log('selected station:', selected)
+  
   const selectStyle = {
     padding: '10px 14px',
     fontSize: '16px',
@@ -54,9 +59,15 @@ function App() {
         </select>
       </div>
 
-      <p style={{ marginTop: '20px' }}>
-        Selected: <strong>{selectedId}</strong> — <strong>{measurement}</strong>
-      </p>
+      <div style={{ marginTop: '32px', display: 'flex', justifyContent: 'center' }}>
+        {selected && (
+          <WeatherCard
+            stationName={selected.name}
+            latitude={selected.latitude}
+            longitude={selected.longitude}
+          />
+        )}
+      </div>
     </div>
   )
 }

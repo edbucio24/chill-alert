@@ -25,6 +25,8 @@ export function WeatherCard({ stationName, latitude, longitude }: Props) {
     setData(null)
     setError(null)
 
+    console.log('WeatherCard received:', { latitude, longitude })
+    
     fetchLiveWeather(latitude, longitude)
       .then((result) => {
         if (!cancelled) setData(result)

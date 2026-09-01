@@ -1,0 +1,126 @@
+.weather-card {
+  width: 280px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px 20px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.weather-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.weather-card-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--text-h);
+}
+
+.weather-card-badge {
+  font-size: 12px;
+  color: var(--text);
+  background: var(--code-bg);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+.weather-card-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 12px 0 4px;
+}
+
+.weather-card-temp {
+  display: flex;
+  align-items: flex-start;
+}
+
+.temp-value {
+  font-size: 44px;
+  font-weight: 700;
+  color: var(--text-h);
+  line-height: 1;
+}
+
+.temp-unit {
+  font-size: 20px;
+  color: var(--text);
+  margin-left: 2px;
+}
+
+.weather-card-condition {
+  color: var(--text);
+  font-size: 15px;
+  margin-bottom: 18px;
+}
+
+.weather-card-stats {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 18px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-h);
+}
+
+.stat-value {
+  font-weight: 600;
+  font-size: 15px;
+  text-align: left;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--text);
+  text-align: left;
+}
+
+.weather-card-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0 -20px 8px;
+}
+
+.weather-card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  color: var(--text-h);
+}
+
+.weather-card-row:last-child {
+  border-bottom: none;
+}
+
+.row-range {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.weather-card-forecast-label {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text-h);
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}

@@ -2,6 +2,8 @@ export interface Station{
     id: string;
     name: string;
     county: string
+    latitude: number
+    longitude: number
 }
 
 export type Measurement = 'Temperature' | 'Dew Point' | 'Wind Speed' | 'Precipitation'
