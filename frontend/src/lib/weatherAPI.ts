@@ -1,7 +1,7 @@
 export interface LiveWeather {
     currenttemp: number
     condition: string
-    preicpation:string
+    preicpation:number
     windmph: number
     todaylow:number
     todayshigh:number
