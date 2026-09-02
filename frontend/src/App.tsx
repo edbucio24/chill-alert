@@ -4,6 +4,7 @@ import { measurementOptions } from './types'
 import type { Measurement } from './types'
 import { WeatherCard } from './components/WeatherCard'
 import './components/WeatherCard.css'
+import { TempChart } from './components/TempChart'
 
 function App() {
   const [selectedId, setSelectedId] = useState(stations[0].id)
@@ -11,7 +12,7 @@ function App() {
 
   const selected = stations.find((s) => s.id === selectedId)
   console.log('selected station:', selected)
-  
+
   const selectStyle = {
     padding: '10px 14px',
     fontSize: '16px',
@@ -61,11 +62,18 @@ function App() {
 
       <div style={{ marginTop: '32px', display: 'flex', justifyContent: 'center' }}>
         {selected && (
+          <>
           <WeatherCard
             stationName={selected.name}
             latitude={selected.latitude}
             longitude={selected.longitude}
           />
+          <TempChart
+          latitude={selected.latitude}
+          longitude={selected.longitude}
+          measurement={measurement}
+          />
+          </>
         )}
       </div>
     </div>
