@@ -5,6 +5,7 @@ import type { Measurement } from './types'
 import { WeatherCard } from './components/WeatherCard'
 import './components/WeatherCard.css'
 import { TempChart } from './components/TempChart'
+import { RiskBanner } from './components/RiskBanner'
 
 function App() {
   const [selectedId, setSelectedId] = useState(stations[0].id)
@@ -59,6 +60,12 @@ function App() {
           ))}
         </select>
       </div>
+      {selected && (
+        <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center' }}>
+          <RiskBanner latitude={selected.latitude} longitude={selected.longitude} />
+        </div>
+      )}
+
 
       <div style={{ marginTop: '32px', display: 'flex', justifyContent: 'center' }}>
         {selected && (

@@ -181,4 +181,46 @@
     right: 0;
     border-right-color: var(--border);
   }
+  .risk-banner {
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 24px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  margin-bottom: 8px;
+}
+
+.risk-banner-label {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.risk-banner-message {
+  font-size: 13px;
+  color: var(--text);
+  margin-top: 2px;
+}
+
+.risk-banner-stats {
+  display: flex;
+  gap: 24px;
+  margin-left: auto;
+}
+
+.risk-banner-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+.risk-banner-sublabel {
+  font-size: 11px;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
 }
