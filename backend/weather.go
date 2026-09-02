@@ -1,22 +1,22 @@
 package main
 
-import(
+import (
 	"encoding/json"
 	"fmt"
 	"net/http"
 )
 
-type openMeteoResponse struct{
+type openMeteoResponse struct {
 	Current struct {
-		Temperature2m   float64 `json:"temperature_2m"`
-		Precipitation   float64 `json:"precipitation"`
-		WindSpeed10m    float64 `json:"wind_speed_10m"`
-		WeatherCode     int     `json:"weather_code"`
+		Temperature2m float64 `json:"temperature_2m"`
+		Precipitation float64 `json:"precipitation"`
+		WindSpeed10m  float64 `json:"wind_speed_10m"`
+		WeatherCode   int     `json:"weather_code"`
 	} `json:"current"`
 	Daily struct {
-		Time              []string  `json:"time"`
-		Temperature2mMax  []float64 `json:"temperature_2m_max"`
-		Temperature2mMin  []float64 `json:"temperature_2m_min"`
+		Time             []string  `json:"time"`
+		Temperature2mMax []float64 `json:"temperature_2m_max"`
+		Temperature2mMin []float64 `json:"temperature_2m_min"`
 	} `json:"daily"`
 }
 
@@ -32,9 +32,9 @@ type WeatherResponse struct {
 	Threshold   float64 `json:"threshold"`
 }
 
-const FROST = 32.0
+const frostThresholdF = 32.0
 
-unc codeToCondition(code int) string {
+func codeToCondition(code int) string {
 	switch {
 	case code == 0:
 		return "Sunny"
@@ -103,4 +103,3 @@ func fetchWeatherForStation(station *Station) (*WeatherResponse, error) {
 		Threshold:   frostThresholdF,
 	}, nil
 }
-
