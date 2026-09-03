@@ -75,9 +75,8 @@ function App() {
             stationId={selectedId}
           />
           <TempChart
-          latitude={selected.latitude}
-          longitude={selected.longitude}
-          measurement={measurement}
+            stationId={selected.id}
+            measurement={measurement}
           />
           </>
         )}

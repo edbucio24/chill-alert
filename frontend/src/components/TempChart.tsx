@@ -1,40 +1,39 @@
-import { useState, useEffect } from "react";
-import{
-    AreaChart,
-    Area,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    ReferenceLine,
-    ResponsiveContainer
+import { useState, useEffect } from "react"
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ReferenceLine,
+  ResponsiveContainer
 } from 'recharts'
-import { fetchHourlyData } from "../lib/weatherAPI";
-import type { HourlyPoint } from "../lib/weatherAPI";
-import type { Measurement } from "../types";
+import { fetchHourlyData } from "../lib/weatherAPI"
+import type { HourlyPoint } from "../lib/weatherAPI"
+import type { Measurement } from "../types"
 
-interface Props{
-    latitude: number
-    longitude:number
-    measurement:Measurement
+interface Props {
+  stationId: string
+  measurement: Measurement
 }
 
 const FROST = 32
 
-const metricConfig: Record<Measurement, {key: keyof HourlyPoint; unit:string;label:string}>={
+const metricConfig: Record<Measurement, { key: keyof HourlyPoint; unit: string; label: string }> = {
   Temperature: { key: 'temperature', unit: '°F', label: 'Temperature' },
   'Dew Point': { key: 'dewPoint', unit: '°F', label: 'Dew Point' },
   'Wind Speed': { key: 'windSpeed', unit: 'mph', label: 'Wind Speed' },
   Precipitation: { key: 'precipitation', unit: 'in', label: 'Precipitation' },
 }
 
-function formatTime(iso:string){
-    const date = new Date(iso)
-    return date.toLocaleDateString([], {hour:'numeric'})
+function formatTime(iso: string) {
+  const date = new Date(iso)
+  return date.toLocaleTimeString([], { hour: 'numeric' })
 }
 
-export function TempChart({latitude,longitude,measurement}:Props){
-const [hourly, setHourly] = useState<HourlyPoint[] | null>(null)
+export function TempChart({ stationId, measurement }: Props) {
+  const [hourly, setHourly] = useState<HourlyPoint[] | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -42,7 +41,7 @@ const [hourly, setHourly] = useState<HourlyPoint[] | null>(null)
     setHourly(null)
     setError(null)
 
-    fetchHourlyData(latitude, longitude)
+    fetchHourlyData(stationId)
       .then((result) => {
         if (!cancelled) setHourly(result)
       })
@@ -53,7 +52,7 @@ const [hourly, setHourly] = useState<HourlyPoint[] | null>(null)
     return () => {
       cancelled = true
     }
-  }, [latitude, longitude])
+  }, [stationId])
 
   if (error) return <div className="chart-panel">Couldn't load chart data: {error}</div>
   if (!hourly) return <div className="chart-panel">Loading chart…</div>
@@ -78,7 +77,8 @@ const [hourly, setHourly] = useState<HourlyPoint[] | null>(null)
           <CartesianGrid strokeDasharray="3 5" stroke="#e5e4e7" vertical={false} />
           <XAxis dataKey="time" tick={{ fontSize: 11 }} interval="preserveStartEnd" minTickGap={30} />
           <YAxis tick={{ fontSize: 11 }} width={40} tickFormatter={(v) => `${v}`} />
-            <Tooltip formatter={(v) => [`${v}${config.unit}`, config.label]} />          {measurement === 'Temperature' && (
+          <Tooltip formatter={(v) => [`${v}${config.unit}`, config.label]} />
+          {measurement === 'Temperature' && (
             <ReferenceLine
               y={FROST}
               stroke="#3b9cd9"

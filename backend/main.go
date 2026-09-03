@@ -34,5 +34,22 @@ func main() {
 		c.JSON(http.StatusOK, weather)
 	})
 
+	router.GET("/api/stations/:id/hourly", func(c *gin.Context) {
+	id := c.Param("id")
+	station := findStation(id)
+	if station == nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "station not found"})
+		return
+	}
+
+	hourly, err := fetchHourlyForStation(station)
+	if err != nil {
+		c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, hourly)
+})
+
 	router.Run(":8080")
 }
