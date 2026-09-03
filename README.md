@@ -11,7 +11,23 @@ A full-stack frost-risk monitoring dashboard for agricultural weather stations a
 - **Multi-station support** — covers five real Washington agricultural regions: Pullman, Prosser, Wenatchee, Mount Vernon, and Walla Walla
 
 ## Architecture
-
+```
+┌──────────────────┐         ┌───────────────────┐         ┌────────────────┐
+│                  │         │                    │         │                │
+│  React Frontend  │  HTTP   │   Go / Gin Backend │  HTTP   │  Open-Meteo    │
+│  (Vite + TS)     │ ──────> │                    │ ──────> │  Weather API   │
+│                  │ <────── │                    │ <────── │                │
+│                  │  JSON   │                    │  JSON   │                │
+└──────────────────┘         └─────────┬──────────┘         └────────────────┘
+                                        │
+                                        │ background poller
+                                        │ writes every 5 min
+                                        ▼
+                              ┌───────────────────┐
+                              │   SQLite Database  │
+                              │   (readings log)   │
+                              └───────────────────┘
+```
 
 
 The frontend never talks to Open-Meteo directly — every live data request goes through the Go backend, which fetches from Open-Meteo, computes frost risk, and returns a clean response. A background goroutine independently polls all stations every 5 minutes and logs readings to SQLite, building a historical dataset over time.
