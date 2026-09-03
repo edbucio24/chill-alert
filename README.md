@@ -91,6 +91,42 @@ Visit `http://localhost:5173` in your browser. Pick a station and measurement fr
 
 > Both the frontend and backend need to be running simultaneously during local development.
 
+## Project Structure
+
+```
+chill-alert/
+├── frontend/                    # React + TypeScript + Vite app
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── WeatherCard.tsx      # Current conditions + 3-day forecast card
+│   │   │   ├── WeatherCard.css
+│   │   │   ├── TempChart.tsx        # Hourly trend chart with frost line
+│   │   │   └── RiskBanner.tsx       # Frost risk status banner
+│   │   ├── lib/
+│   │   │   └── weatherAPI.ts        # API client — calls the Go backend
+│   │   ├── App.tsx                  # Main app layout, station/measurement state
+│   │   ├── main.tsx                 # React entry point
+│   │   ├── mockData.ts              # Static station metadata (id, name, coords)
+│   │   ├── types.ts                 # Shared TypeScript types
+│   │   └── index.css                # Global styles
+│   ├── index.html
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── vite.config.ts               # Includes /api proxy to backend
+│
+├── backend/                     # Go + Gin API server
+│   ├── main.go                      # Server setup, routes
+│   ├── stations.go                  # Station definitions, lookup helper
+│   ├── weather.go                   # Open-Meteo integration, risk logic
+│   ├── db.go                        # SQLite setup, reading storage/queries
+│   ├── poller.go                    # Background job that logs readings
+│   ├── dateutil.go                  # Date parsing helper
+│   ├── go.mod
+│   └── chillalert.db                # SQLite database (created on first run)
+│
+└── README.md
+```
+
 ## How Frost Risk Is Calculated
 
 Each station has a frost threshold (default: 32°F). The backend classifies current conditions as:
