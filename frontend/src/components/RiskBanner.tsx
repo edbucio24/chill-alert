@@ -4,22 +4,10 @@ import { fetchLiveWeather } from '../lib/weatherAPI'
 import type { LiveWeather } from '../lib/weatherAPI'
 
 interface Props {
-  latitude: number
-  longitude: number
+  stationId: string
 }
 
-const FROST_THRESHOLD_F = 32
-
-type RiskLevel = 'none' | 'watch' | 'warning' | 'critical'
-
-function getRiskLevel(currentTemp: number): RiskLevel {
-  if (currentTemp <= FROST_THRESHOLD_F - 4) return 'critical'
-  if (currentTemp <= FROST_THRESHOLD_F) return 'warning'
-  if (currentTemp <= FROST_THRESHOLD_F + 4) return 'watch'
-  return 'none'
-}
-
-const riskConfig: Record<RiskLevel, { label: string; color: string; bg: string; Icon: typeof CheckCircle; message: string }> = {
+const riskConfig: Record<LiveWeather['riskLevel'], { label: string; color: string; bg: string; Icon: typeof CheckCircle; message: string }> = {
   none: {
     label: 'No Risk',
     color: '#1a7f4e',
@@ -50,7 +38,7 @@ const riskConfig: Record<RiskLevel, { label: string; color: string; bg: string; 
   },
 }
 
-export function RiskBanner({ latitude, longitude }: Props) {
+export function RiskBanner({ stationId }: Props) {
   const [data, setData] = useState<LiveWeather | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -59,7 +47,7 @@ export function RiskBanner({ latitude, longitude }: Props) {
     setData(null)
     setError(null)
 
-    fetchLiveWeather(latitude, longitude)
+    fetchLiveWeather(stationId)
       .then((result) => {
         if (!cancelled) setData(result)
       })
@@ -70,13 +58,12 @@ export function RiskBanner({ latitude, longitude }: Props) {
     return () => {
       cancelled = true
     }
-  }, [latitude, longitude])
+  }, [stationId])
 
   if (error) return null
   if (!data) return <div className="risk-banner">Checking frost risk…</div>
 
-  const level = getRiskLevel(data.currenttemp)
-  const cfg = riskConfig[level]
+  const cfg = riskConfig[data.riskLevel]
   const Icon = cfg.Icon
 
   return (
@@ -90,11 +77,11 @@ export function RiskBanner({ latitude, longitude }: Props) {
       </div>
       <div className="risk-banner-stats">
         <div>
-          <div className="risk-banner-value">{data.currenttemp}°F</div>
+          <div className="risk-banner-value">{Math.round(data.currentTemp)}°F</div>
           <div className="risk-banner-sublabel">Current</div>
         </div>
         <div>
-          <div className="risk-banner-value">{FROST_THRESHOLD_F}°F</div>
+          <div className="risk-banner-value">{data.threshold}°F</div>
           <div className="risk-banner-sublabel">Threshold</div>
         </div>
       </div>

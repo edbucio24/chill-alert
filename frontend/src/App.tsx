@@ -62,7 +62,7 @@ function App() {
       </div>
       {selected && (
         <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center' }}>
-          <RiskBanner latitude={selected.latitude} longitude={selected.longitude} />
+          <RiskBanner stationId={selectedId} />
         </div>
       )}
 
@@ -72,8 +72,7 @@ function App() {
           <>
           <WeatherCard
             stationName={selected.name}
-            latitude={selected.latitude}
-            longitude={selected.longitude}
+            stationId={selectedId}
           />
           <TempChart
           latitude={selected.latitude}

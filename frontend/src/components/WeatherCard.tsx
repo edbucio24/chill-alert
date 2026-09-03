@@ -5,8 +5,7 @@ import type { LiveWeather } from "../lib/weatherAPI"
 
 interface Props {
   stationName: string
-  latitude: number
-  longitude: number
+  stationId: string
 }
 
 function ConditionIcon({ condition, size = 20 }: { condition: string; size?: number }) {
@@ -16,7 +15,7 @@ function ConditionIcon({ condition, size = 20 }: { condition: string; size?: num
   return <Cloud size={size} />
 }
 
-export function WeatherCard({ stationName, latitude, longitude }: Props) {
+export function WeatherCard({ stationName, stationId }: Props) {
   const [data, setData] = useState<LiveWeather | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -25,9 +24,7 @@ export function WeatherCard({ stationName, latitude, longitude }: Props) {
     setData(null)
     setError(null)
 
-    console.log('WeatherCard received:', { latitude, longitude })
-    
-    fetchLiveWeather(latitude, longitude)
+    fetchLiveWeather(stationId)
       .then((result) => {
         if (!cancelled) setData(result)
       })
@@ -38,7 +35,7 @@ export function WeatherCard({ stationName, latitude, longitude }: Props) {
     return () => {
       cancelled = true
     }
-  }, [latitude, longitude])
+  }, [stationId])
 
   if (error) {
     return <div className="weather-card">Couldn't load weather: {error}</div>
@@ -61,7 +58,7 @@ export function WeatherCard({ stationName, latitude, longitude }: Props) {
       <div className="weather-card-main">
         <ConditionIcon condition={data.condition} size={56} />
         <div className="weather-card-temp">
-          <span className="temp-value">{data.currenttemp}</span>
+          <span className="temp-value">{Math.round(data.currentTemp)}</span>
           <span className="temp-unit">°F</span>
         </div>
       </div>
@@ -71,14 +68,14 @@ export function WeatherCard({ stationName, latitude, longitude }: Props) {
         <div className="stat-item">
           <Droplet size={16} />
           <div>
-            <div className="stat-value">{data.preicpation.toFixed(2)} in</div>
+            <div className="stat-value">{data.precip.toFixed(2)} in</div>
             <div className="stat-label">Precip</div>
           </div>
         </div>
         <div className="stat-item">
           <Wind size={16} />
           <div>
-            <div className="stat-value">{data.windmph} mph</div>
+            <div className="stat-value">{Math.round(data.wind)} mph</div>
             <div className="stat-label">Wind</div>
           </div>
         </div>
@@ -89,22 +86,9 @@ export function WeatherCard({ stationName, latitude, longitude }: Props) {
       <div className="weather-card-row">
         <span>Today</span>
         <span className="row-range">
-          <ConditionIcon condition={data.condition} size={16} />
-          {data.todaylow}°F — {data.todayshigh}°F
+          {Math.round(data.todayLow)}°F — {Math.round(data.todayHigh)}°F
         </span>
       </div>
-
-      <div className="weather-card-forecast-label">3-Day Forecast</div>
-
-      {data.forecast.map((f) => (
-        <div className="weather-card-row" key={f.day}>
-          <span>{f.day}</span>
-          <span className="row-range">
-            <ConditionIcon condition={f.condition} size={16} />
-            {f.low}°F — {f.high}°F
-          </span>
-        </div>
-      ))}
     </div>
   )
 }

@@ -25,7 +25,7 @@ const metricConfig: Record<Measurement, {key: keyof HourlyPoint; unit:string;lab
   Temperature: { key: 'temperature', unit: '°F', label: 'Temperature' },
   'Dew Point': { key: 'dewPoint', unit: '°F', label: 'Dew Point' },
   'Wind Speed': { key: 'windSpeed', unit: 'mph', label: 'Wind Speed' },
-  Precipitation: { key: 'precipation', unit: 'in', label: 'Precipitation' },
+  Precipitation: { key: 'precipitation', unit: 'in', label: 'Precipitation' },
 }
 
 function formatTime(iso:string){
