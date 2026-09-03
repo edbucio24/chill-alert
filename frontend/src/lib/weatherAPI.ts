@@ -1,3 +1,10 @@
+export interface ForecastDay {
+  day: string
+  condition: string
+  low: number
+  high: number
+}
+
 export interface LiveWeather {
   stationId: string
   currentTemp: number
@@ -8,17 +15,16 @@ export interface LiveWeather {
   todayHigh: number
   riskLevel: 'none' | 'watch' | 'warning' | 'critical'
   threshold: number
+  forecast: ForecastDay[]
 }
 
 export async function fetchLiveWeather(stationId: string): Promise<LiveWeather> {
-  console.log('Fetching weather for stationId:', stationId)
   const res = await fetch(`/api/stations/${stationId}/weather`)
   if (!res.ok) {
     throw new Error(`Weather API Error: ${res.status}`)
   }
   return res.json()
 }
-
 
 export interface HourlyPoint {
   time: string

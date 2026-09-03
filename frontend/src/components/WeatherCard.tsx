@@ -89,6 +89,18 @@ export function WeatherCard({ stationName, stationId }: Props) {
           {Math.round(data.todayLow)}°F — {Math.round(data.todayHigh)}°F
         </span>
       </div>
+
+      <div className="weather-card-forecast-label">3-Day Forecast</div>
+
+      {data.forecast.map((f) => (
+        <div className="weather-card-row" key={f.day}>
+          <span>{f.day}</span>
+          <span className="row-range">
+            <ConditionIcon condition={f.condition} size={16} />
+            {Math.round(f.low)}°F — {Math.round(f.high)}°F
+          </span>
+        </div>
+      ))}
     </div>
   )
 }

@@ -17,19 +17,28 @@ type openMeteoResponse struct {
 		Time             []string  `json:"time"`
 		Temperature2mMax []float64 `json:"temperature_2m_max"`
 		Temperature2mMin []float64 `json:"temperature_2m_min"`
+		WeatherCode      []int     `json:"weather_code"`
 	} `json:"daily"`
 }
 
+type ForecastDay struct {
+	Day       string  `json:"day"`
+	Condition string  `json:"condition"`
+	Low       float64 `json:"low"`
+	High      float64 `json:"high"`
+}
+
 type WeatherResponse struct {
-	StationID   string  `json:"stationId"`
-	CurrentTemp float64 `json:"currentTemp"`
-	Condition   string  `json:"condition"`
-	Precip      float64 `json:"precip"`
-	Wind        float64 `json:"wind"`
-	TodayLow    float64 `json:"todayLow"`
-	TodayHigh   float64 `json:"todayHigh"`
-	RiskLevel   string  `json:"riskLevel"`
-	Threshold   float64 `json:"threshold"`
+	StationID   string        `json:"stationId"`
+	CurrentTemp float64       `json:"currentTemp"`
+	Condition   string        `json:"condition"`
+	Precip      float64       `json:"precip"`
+	Wind        float64       `json:"wind"`
+	TodayLow    float64       `json:"todayLow"`
+	TodayHigh   float64       `json:"todayHigh"`
+	RiskLevel   string        `json:"riskLevel"`
+	Threshold   float64       `json:"threshold"`
+	Forecast    []ForecastDay `json:"forecast"`
 }
 
 const frostThresholdF = 32.0
@@ -70,7 +79,7 @@ func riskLevel(currentTemp float64) string {
 
 func fetchWeatherForStation(station *Station) (*WeatherResponse, error) {
 	url := fmt.Sprintf(
-		"https://api.open-meteo.com/v1/forecast?latitude=%f&longitude=%f&current=temperature_2m,precipitation,wind_speed_10m,weather_code&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&forecast_days=1",
+		"https://api.open-meteo.com/v1/forecast?latitude=%f&longitude=%f&current=temperature_2m,precipitation,wind_speed_10m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&forecast_days=4",
 		station.Latitude, station.Longitude,
 	)
 
@@ -91,6 +100,29 @@ func fetchWeatherForStation(station *Station) (*WeatherResponse, error) {
 
 	currentTemp := raw.Current.Temperature2m
 
+	dayNames := map[string]string{}
+	weekdayNames := []string{"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"}
+
+	var forecast []ForecastDay
+	for i := 1; i < len(raw.Daily.Time) && i <= 3; i++ {
+		dateStr := raw.Daily.Time[i]
+		label, ok := dayNames[dateStr]
+		if !ok {
+			t, parseErr := parseISODate(dateStr)
+			if parseErr == nil {
+				label = weekdayNames[int(t.Weekday())]
+			} else {
+				label = dateStr
+			}
+		}
+		forecast = append(forecast, ForecastDay{
+			Day:       label,
+			Condition: codeToCondition(raw.Daily.WeatherCode[i]),
+			Low:       raw.Daily.Temperature2mMin[i],
+			High:      raw.Daily.Temperature2mMax[i],
+		})
+	}
+
 	return &WeatherResponse{
 		StationID:   station.ID,
 		CurrentTemp: currentTemp,
@@ -101,6 +133,7 @@ func fetchWeatherForStation(station *Station) (*WeatherResponse, error) {
 		TodayHigh:   raw.Daily.Temperature2mMax[0],
 		RiskLevel:   riskLevel(currentTemp),
 		Threshold:   frostThresholdF,
+		Forecast:    forecast,
 	}, nil
 }
 
