@@ -4,7 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 )
+
+var httpClient = &http.Client{
+	Timeout: 10 * time.Second,
+}
 
 type openMeteoResponse struct {
 	Current struct {
@@ -83,7 +88,7 @@ func fetchWeatherForStation(station *Station) (*WeatherResponse, error) {
 		station.Latitude, station.Longitude,
 	)
 
-	resp, err := http.Get(url)
+	resp, err := httpClient.Get(url)
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +166,7 @@ func fetchHourlyForStation(station *Station) ([]HourlyPoint, error) {
 		station.Latitude, station.Longitude,
 	)
 
-	resp, err := http.Get(url)
+	resp, err := httpClient.Get(url)
 	if err != nil {
 		return nil, err
 	}

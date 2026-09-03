@@ -26,14 +26,17 @@ func pollAllStations() {
 		weather, err := fetchWeatherForStation(&s)
 		if err != nil {
 			log.Printf("poller: failed to fetch weather for %s: %v", s.ID, err)
+			time.Sleep(2 * time.Second)
 			continue
 		}
 
 		if err := insertReading(weather); err != nil {
 			log.Printf("poller: failed to insert reading for %s: %v", s.ID, err)
+			time.Sleep(2 * time.Second)
 			continue
 		}
 
 		log.Printf("poller: logged reading for %s (%.1f°F, %s)", s.ID, weather.CurrentTemp, weather.RiskLevel)
+		time.Sleep(2 * time.Second)
 	}
 }
