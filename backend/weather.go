@@ -103,3 +103,56 @@ func fetchWeatherForStation(station *Station) (*WeatherResponse, error) {
 		Threshold:   frostThresholdF,
 	}, nil
 }
+
+type openMeteoHourlyResponse struct {
+	Hourly struct {
+		Time          []string  `json:"time"`
+		Temperature2m []float64 `json:"temperature_2m"`
+		DewPoint2m    []float64 `json:"dew_point_2m"`
+		WindSpeed10m  []float64 `json:"wind_speed_10m"`
+		Precipitation []float64 `json:"precipitation"`
+	} `json:"hourly"`
+}
+
+type HourlyPoint struct {
+	Time          string  `json:"time"`
+	Temperature   float64 `json:"temperature"`
+	DewPoint      float64 `json:"dewPoint"`
+	WindSpeed     float64 `json:"windSpeed"`
+	Precipitation float64 `json:"precipitation"`
+}
+
+func fetchHourlyForStation(station *Station) ([]HourlyPoint, error) {
+	url := fmt.Sprintf(
+		"https://api.open-meteo.com/v1/forecast?latitude=%f&longitude=%f&hourly=temperature_2m,dew_point_2m,wind_speed_10m,precipitation&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&past_days=1&forecast_days=1",
+		station.Latitude, station.Longitude,
+	)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("open-meteo returned status %d", resp.StatusCode)
+	}
+
+	var raw openMeteoHourlyResponse
+	if err := json.NewDecoder(resp.Body).Decode(&raw); err != nil {
+		return nil, err
+	}
+
+	points := make([]HourlyPoint, len(raw.Hourly.Time))
+	for i, t := range raw.Hourly.Time {
+		points[i] = HourlyPoint{
+			Time:          t,
+			Temperature:   raw.Hourly.Temperature2m[i],
+			DewPoint:      raw.Hourly.DewPoint2m[i],
+			WindSpeed:     raw.Hourly.WindSpeed10m[i],
+			Precipitation: raw.Hourly.Precipitation[i],
+		}
+	}
+
+	return points, nil
+}
