@@ -2,6 +2,9 @@
 
 A full-stack frost-risk monitoring dashboard for agricultural weather stations across Washington State. Chill Alert tracks live conditions, visualizes temperature trends, and flags when a station crosses into frost-risk territory — inspired by real ag-weather platforms like WSU's AgWeatherNet.
 
+<img width="1167" height="893" alt="Screenshot 2026-09-03 at 12 12 37 PM" src="https://github.com/user-attachments/assets/d0059bf9-f397-475b-b479-b50aa4691bd0" />
+
+
 ## Features
 
 - **Live weather dashboard** — current temperature, condition, precipitation, wind, and a 3-day forecast for each station
